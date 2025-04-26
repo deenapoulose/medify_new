@@ -5,8 +5,12 @@ import { useNavigate } from "react-router-dom";
 export default function StateCitySearch() {
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
-  const [selectedState, setSelectedState] = useState('');
-  const [selectedCity, setSelectedCity] = useState('');
+
+  const [selectedState, setSelectedState] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
+  const [showStateOptions, setShowStateOptions] = useState(false);
+  const [showCityOptions, setShowCityOptions] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,20 +31,52 @@ export default function StateCitySearch() {
   return (
     <form onSubmit={handleSubmit} className="flex space-x-4 p-4 justify-center">
       <div id="state">
-        <select value={selectedState} onChange={(e) => setSelectedState(e.target.value)}>
-          <option value="">Select State</option>
-          {states.map(state => <option key={state} value={state}>{state}</option>)}
-        </select>
+        <div onClick={() => setShowStateOptions(!showStateOptions)}>
+          {selectedState || "Select State"}
+        </div>
+        {showStateOptions && (
+          <ul>
+            {states.map((state) => (
+              <li
+                key={state}
+                onClick={() => {
+                  setSelectedState(state);
+                  setShowStateOptions(false);
+                }}
+              >
+                {state}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       <div id="city">
-        <select value={selectedCity} onChange={(e) => setSelectedCity(e.target.value)} disabled={!selectedState}>
-          <option value="">Select City</option>
-          {cities.map(city => <option key={city} value={city}>{city}</option>)}
-        </select>
+        <div onClick={() => setShowCityOptions(!showCityOptions)}>
+          {selectedCity || "Select City"}
+        </div>
+        {showCityOptions && (
+          <ul>
+            {cities.map((city) => (
+              <li
+                key={city}
+                onClick={() => {
+                  setSelectedCity(city);
+                  setShowCityOptions(false);
+                }}
+              >
+                {city}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
-      <button type="submit" id="searchBtn" className="bg-blue-500 text-white px-4 py-2 rounded">
+      <button
+        type="submit"
+        id="searchBtn"
+        className="bg-blue-500 text-white px-4 py-2 rounded"
+      >
         Search
       </button>
     </form>
