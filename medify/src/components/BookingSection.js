@@ -66,6 +66,10 @@ export default function BookingSection({ hospital, onClose }) {
       </div>
 
       <div>
+      <p>Today</p>
+      <p>Morning</p>
+      <p>Afternoon</p>
+      <p>Evening</p>
         <p>Select Time of Day:</p>
         {TIMES_OF_DAY.map((time) => (
           <label key={time} style={{ marginRight: "1rem" }}>

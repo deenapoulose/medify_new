@@ -30,7 +30,11 @@ export default function LandingPage() {
     }
 
     setLoadingCities(true);
-    fetch(`https://meddata-backend.onrender.com/cities/${encodeURIComponent(selectedState)}`)
+    fetch(
+      `https://meddata-backend.onrender.com/cities/${encodeURIComponent(
+        selectedState
+      )}`
+    )
       .then((res) => res.json())
       .then((data) => {
         setCities(data);
@@ -46,16 +50,21 @@ export default function LandingPage() {
       alert("Please select both state and city");
       return;
     }
-    navigate(`/search?state=${encodeURIComponent(selectedState)}&city=${encodeURIComponent(selectedCity)}`);
+
+    navigate(`/search?state=${selectedState}&city=${selectedCity}`);
   };
 
   return (
     <main style={{ padding: "2rem" }}>
       <h1>Find Medical Centers</h1>
 
-      <form onSubmit={handleSubmit} style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+      <form
+        onSubmit={handleSubmit}
+        style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}
+      >
         <div id="state">
-          <label htmlFor="state-select">State:</label><br />
+          <label htmlFor="state-select">State:</label>
+          <br />
           <select
             id="state-select"
             value={selectedState}
@@ -72,7 +81,8 @@ export default function LandingPage() {
         </div>
 
         <div id="city">
-          <label htmlFor="city-select">City:</label><br />
+          <label htmlFor="city-select">City:</label>
+          <br />
           <select
             id="city-select"
             value={selectedCity}
@@ -89,7 +99,11 @@ export default function LandingPage() {
         </div>
 
         <div>
-          <button type="submit" id="searchBtn" style={{ padding: "0.5rem 1rem", marginTop: "1.6rem" }}>
+          <button
+            type="submit"
+            id="searchBtn"
+            style={{ padding: "0.5rem 1rem", marginTop: "1.6rem" }}
+          >
             Search
           </button>
         </div>

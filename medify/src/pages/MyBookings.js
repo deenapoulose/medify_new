@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 
 export default function MyBookings() {
   const [bookings, setBookings] = useState([]);
-
   useEffect(() => {
-    const storedBookings = JSON.parse(localStorage.getItem("bookings") || "[]");
-    setBookings(storedBookings);
+    const stored = JSON.parse(localStorage.getItem("bookings") || "[]");
+    setBookings(stored);
   }, []);
 
   return (

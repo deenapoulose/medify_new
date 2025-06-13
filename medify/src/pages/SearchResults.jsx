@@ -13,15 +13,12 @@ export default function SearchResults() {
   const [selectedHospital, setSelectedHospital] = useState(null);
 
   useEffect(() => {
-    if (!state || !city) return;
-    setLoading(true);
-    fetch(
-      `https://meddata-backend.onrender.com/data?state=${encodeURIComponent(state)}&city=${encodeURIComponent(city)}`
-    )
-      .then((res) => res.json())
-      .then((data) => setHospitals(data))
-      .catch(() => alert("Failed to fetch hospitals"))
-      .finally(() => setLoading(false));
+    if (state && city) {
+      fetch(`https://meddata-backend.onrender.com/data?state=${state}&city=${city}`)
+        .then((res) => res.json())
+        .then(setHospitals)
+        .catch(console.error);
+    }
   }, [state, city]);
 
   if (!state || !city) {
