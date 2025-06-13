@@ -1,51 +1,102 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const saveBookingToLocalStorage = (newBooking) => {
+  const existing = JSON.parse(localStorage.getItem('bookings')) || [];
+  existing.push(newBooking);
+  localStorage.setItem('bookings', JSON.stringify(existing));
+};
+
 const LandingPage = () => {
-  const [states, setStates] = useState([]);
-  const [cities, setCities] = useState([]);
-  const [selectedState, setSelectedState] = useState('');
-  const [selectedCity, setSelectedCity] = useState('');
+  const [state, setState] = useState('');
+  const [city, setCity] = useState('');
+  const [hospitals, setHospitals] = useState([]);
+  const [isSearchClicked, setIsSearchClicked] = useState(false);
+  const [selectedHospital, setSelectedHospital] = useState(null);
+  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedTime, setSelectedTime] = useState('');
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetch('https://meddata-backend.onrender.com/states')
-      .then(res => res.json())
-      .then(setStates);
-  }, []);
-
-  useEffect(() => {
-    if (selectedState) {
-      fetch(`https://meddata-backend.onrender.com/cities/${selectedState}`)
-        .then(res => res.json())
-        .then(setCities);
+  const handleSearch = async () => {
+    if (state && city) {
+      const response = await fetch(`https://meddata-backend.onrender.com/data?state=${state}&city=${city}`);
+      const data = await response.json();
+      setHospitals(data);
+      setIsSearchClicked(true);
     }
-  }, [selectedState]);
+  };
 
-  const handleSearch = () => {
-    if (selectedState && selectedCity) {
-      navigate(`/search?state=${selectedState}&city=${selectedCity}`);
+  const handleBook = () => {
+    if (selectedHospital && selectedDate && selectedTime) {
+      saveBookingToLocalStorage({
+        "Hospital Name": selectedHospital["Hospital Name"],
+        City: selectedHospital.City,
+        State: selectedHospital.State,
+        bookingDate: selectedDate,
+        bookingTime: selectedTime,
+      });
+      alert("Appointment booked!");
+      setSelectedHospital(null);
+      setSelectedDate('');
+      setSelectedTime('');
     }
   };
 
   return (
     <div>
       <div id="state">
-        <select onChange={e => setSelectedState(e.target.value)}>
+        <select onChange={(e) => setState(e.target.value)} value={state}>
           <option value="">Select State</option>
-          {states.map(s => <option key={s} value={s}>{s}</option>)}
+          <option value="Alabama">Alabama</option>
         </select>
       </div>
+
       <div id="city">
-        <select onChange={e => setSelectedCity(e.target.value)}>
+        <select onChange={(e) => setCity(e.target.value)} value={city}>
           <option value="">Select City</option>
-          {cities.map(c => <option key={c} value={c}>{c}</option>)}
+          <option value="DOTHAN">DOTHAN</option>
         </select>
       </div>
-      <button id="searchBtn" type="submit" onClick={handleSearch}>Search</button>
+
+      <button type="submit" onClick={handleSearch}>
+        Search
+      </button>
+
+      {isSearchClicked && (
+        <h1>{hospitals.length} medical centers available in {city.toLowerCase()}</h1>
+      )}
+
+      {hospitals.map((hospital, idx) => (
+        <div key={idx}>
+          <h2>{hospital["Hospital Name"]}</h2>
+          <button onClick={() => setSelectedHospital(hospital)}>
+            Book FREE Center Visit
+          </button>
+        </div>
+      ))}
+
+      {selectedHospital && (
+        <div>
+          <h3>Booking Appointment at {selectedHospital["Hospital Name"]}</h3>
+          <p>Today</p>
+          <p>Morning</p>
+          <button onClick={() => { setSelectedDate("2024-12-15"); setSelectedTime("10:00 AM"); }}>
+            10:00 AM
+          </button>
+          <p>Afternoon</p>
+          <button onClick={() => { setSelectedDate("2024-12-15"); setSelectedTime("2:00 PM"); }}>
+            2:00 PM
+          </button>
+          <p>Evening</p>
+          <button onClick={() => { setSelectedDate("2024-12-15"); setSelectedTime("6:00 PM"); }}>
+            6:00 PM
+          </button>
+          <br />
+          <button onClick={handleBook}>Confirm Booking</button>
+        </div>
+      )}
     </div>
   );
 };
 
 export default LandingPage;
-
