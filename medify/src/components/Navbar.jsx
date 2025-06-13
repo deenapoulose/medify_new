@@ -1,18 +1,37 @@
+import React from "react";
 import { Link } from "react-router-dom";
-import "./Navbar.css"; 
 
 export default function Navbar() {
   return (
-    <nav className="navbar">
+    <nav
+      style={{
+        backgroundColor: "rgb(0,0,51)",
+        color: "white",
+        padding: "1rem 2rem",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+      }}
+    >
       <div className="logo">
-        <Link to="/">Medify</Link>
+        <Link to="/" style={{ color: "white", textDecoration: "none", fontWeight: "bold", fontSize: "1.5rem" }}>
+          MedFinder
+        </Link>
       </div>
-      <ul className="nav-links">
-        <li><Link to="/">Find Doctors</Link></li>
-        <li><Link to="/">Hospitals</Link></li>
-        <li><Link to="/">Medicines</Link></li>
-        <li><Link to="/my-bookings">My Bookings</Link></li>
-      </ul>
+      <div className="menu" style={{ display: "flex", gap: "1.5rem" }}>
+        <Link to="/" style={{ color: "white", textDecoration: "none" }}>
+          Find Doctors
+        </Link>
+        <Link to="/" style={{ color: "white", textDecoration: "none" }}>
+          Hospitals
+        </Link>
+        <Link to="/" style={{ color: "white", textDecoration: "none" }}>
+          Medicines
+        </Link>
+        <Link to="/my-bookings" style={{ color: "white", textDecoration: "none" }}>
+          My Bookings
+        </Link>
+      </div>
     </nav>
   );
 }
