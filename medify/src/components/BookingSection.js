@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { saveBookingToLocalStorage } from "../utils/storage";
 
 const TIMES_OF_DAY = ["Morning", "Afternoon", "Evening"];
 
@@ -34,7 +35,13 @@ export default function BookingSection({ hospital, onClose }) {
     const existingBookings = JSON.parse(localStorage.getItem("bookings") || "[]");
     existingBookings.push(booking);
     localStorage.setItem("bookings", JSON.stringify(existingBookings));
-
+    saveBookingToLocalStorage({
+        "Hospital Name": hospital.name,
+        City: hospital.city,
+        State: hospital.state,
+        bookingDate: selectedDate,
+        bookingTime: selectedTime,
+      });
     setMessage("Booking successful!");
   };
 
