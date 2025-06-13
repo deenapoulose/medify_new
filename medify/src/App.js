@@ -6,12 +6,14 @@ import "./App.css";
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/search" element={<SearchResults />} />
-        <Route path="/my-bookings" element={<MyBookings />} />
-      </Routes>
-    </BrowserRouter>
-  );
+    
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/search" element={<SearchResults />} />
+          <Route path="/my-bookings" element={<MyBookings />} />
+        </Routes>
+      </BrowserRouter>
+    );
+  
 }

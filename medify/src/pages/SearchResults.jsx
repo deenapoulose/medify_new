@@ -1,8 +1,5 @@
-import { useEffect, useState } from "react";
-import { getMedicalCenters } from "../api";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import BookingModal from "../compoents/BookingModal";
-
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -12,35 +9,35 @@ export default function SearchResults() {
   const query = useQuery();
   const state = query.get("state");
   const city = query.get("city");
-
-  const [hospitals, setHospitals] = useState([]);
-  const [selectedHospital, setSelectedHospital] = useState(null);
+  const [centers, setCenters] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (state && city) {
-      getMedicalCenters(state, city).then(setHospitals);
+      fetch(`https://meddata-backend.onrender.com/data?state=${state}&city=${city}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setCenters(data);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error("Failed to fetch centers", err);
+          setLoading(false);
+        });
     }
   }, [state, city]);
 
-  return (
-    <div className="p-4">
-      <h1>{hospitals.length} medical centers available in {city?.toLowerCase()}</h1>
-      <div className="grid gap-4 mt-4">
-        {hospitals.map(hospital => (
-          <div key={hospital['Hospital Name']} className="p-4 border rounded shadow">
-            <h3>{hospital['Hospital Name']}</h3>
-            <p>{hospital.Address}</p>
-            <button
-              className="bg-green-500 text-white mt-2 px-3 py-2 rounded"
-              onClick={() => setSelectedHospital(hospital)}
-            >
-              Book FREE Center Visit
-            </button>
-          </div>
-        ))}
-      </div>
+  if (loading) return <p>Loading...</p>;
 
-      {selectedHospital && <BookingModal hospital={selectedHospital} closeModal={() => setSelectedHospital(null)} />}
+  return (
+    <div>
+      <h1>{centers.length} medical centers available in {city.toLowerCase()}</h1>
+      {centers.map((center, index) => (
+        <div key={index}>
+          <h3>{center["Hospital Name"]}</h3>
+          <p>{center.Address}</p>
+        </div>
+      ))}
     </div>
   );
 }
