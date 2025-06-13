@@ -1,35 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
-export default function MyBookings() {
+const MyBookings = () => {
   const [bookings, setBookings] = useState([]);
+
   useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("bookings") || "[]");
+    const stored = JSON.parse(localStorage.getItem('bookings') || '[]');
     setBookings(stored);
   }, []);
 
   return (
-    <main style={{ padding: "2rem" }}>
+    <div>
       <h1>My Bookings</h1>
-      {bookings.length === 0 && <p>No bookings found.</p>}
-
-      {bookings.map((booking, i) => (
-        <div
-          key={i}
-          style={{
-            border: "1px solid #ccc",
-            padding: "1rem",
-            marginBottom: "1rem",
-            borderRadius: "6px",
-          }}
-        >
-          <h3>{booking.hospitalName}</h3>
-          <p>
-            {booking.address}, {booking.city}, {booking.state} - {booking.zipCode}
-          </p>
-          <p>Date: {booking.date}</p>
-          <p>Time of Day: {booking.timeOfDay}</p>
+      {bookings.map((b, index) => (
+        <div key={index}>
+          <h3>{b['Hospital Name']}</h3>
+          <p>{b.bookingDate} at {b.bookingTime}</p>
         </div>
       ))}
-    </main>
+    </div>
   );
-}
+};
+
+export default MyBookings;

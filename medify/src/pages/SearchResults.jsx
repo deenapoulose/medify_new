@@ -1,67 +1,58 @@
-import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import BookingSection from "../components/BookingSection";
+import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
-export default function SearchResults() {
-  const location = useLocation();
-  const params = new URLSearchParams(location.search);
-  const state = params.get("state") || "";
-  const city = params.get("city") || "";
-
+const SearchResults = () => {
+  const [searchParams] = useSearchParams();
   const [hospitals, setHospitals] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [selectedHospital, setSelectedHospital] = useState(null);
+  const [activeHospital, setActiveHospital] = useState(null);
+  const state = searchParams.get('state');
+  const city = searchParams.get('city');
 
   useEffect(() => {
     if (state && city) {
       fetch(`https://meddata-backend.onrender.com/data?state=${state}&city=${city}`)
-        .then((res) => res.json())
-        .then(setHospitals)
-        .catch(console.error);
+        .then(res => res.json())
+        .then(setHospitals);
     }
   }, [state, city]);
 
-  if (!state || !city) {
-    return (
-      <main style={{ padding: "2rem" }}>
-        <p>Please select state and city on the home page to see results.</p>
-      </main>
-    );
-  }
+  const handleBook = (hospital) => {
+    setActiveHospital(hospital);
+  };
+
+  const handleConfirm = (date, time) => {
+    const booking = {
+      ...activeHospital,
+      bookingDate: date,
+      bookingTime: time,
+    };
+    const stored = JSON.parse(localStorage.getItem('bookings') || '[]');
+    stored.push(booking);
+    localStorage.setItem('bookings', JSON.stringify(stored));
+    alert('Booked!');
+  };
 
   return (
-    <main style={{ padding: "2rem" }}>
-      <h1>
-        {hospitals.length} medical centers available in {city.toLowerCase()}
-      </h1>
-
-      {loading && <p>Loading hospitals, please wait (may take up to 1 minute)...</p>}
-
-      {!loading && hospitals.length === 0 && <p>No medical centers found.</p>}
-
-      {hospitals.map((hospital, i) => (
-        <div
-          key={i}
-          style={{
-            border: "1px solid #ccc",
-            padding: "1rem",
-            marginBottom: "1rem",
-            borderRadius: "6px",
-          }}
-        >
-          <h3>{hospital["Hospital Name"]}</h3>
-          <p>{hospital.Address}</p>
-          <p>
-            {hospital.City}, {hospital.State} - {hospital["ZIP Code"]}
-          </p>
-          <p>Overall Rating: {hospital["Overall Rating"]}</p>
-          <button onClick={() => setSelectedHospital(hospital)}>Book FREE Center Visit</button>
+    <div>
+      <h1>{hospitals.length} medical centers available in {city?.toLowerCase()}</h1>
+      {hospitals.map(h => (
+        <div key={h.id}>
+          <h3>{h['Hospital Name']}</h3>
+          <button onClick={() => handleBook(h)}>Book FREE Center Visit</button>
         </div>
       ))}
 
-      {selectedHospital && (
-        <BookingSection hospital={selectedHospital} onClose={() => setSelectedHospital(null)} />
+      {activeHospital && (
+        <div>
+          <p>Today</p>
+          <p>Morning</p>
+          <p>Afternoon</p>
+          <p>Evening</p>
+          <button onClick={() => handleConfirm('2024-12-15', '10:00 AM')}>Confirm Booking</button>
+        </div>
       )}
-    </main>
+    </div>
   );
-}
+};
+
+export default SearchResults;

@@ -1,15 +1,12 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import LandingPage from './pages/LandingPage';
+import SearchResults from './pages/SearchResults';
+import MyBookings from './pages/MyBookings';
 
-import Navbar from "./components/Navbar";
-import LandingPage from "./pages/LandingPage";
-import SearchResults from "./pages/SearchResults";
-import MyBookings from "./pages/MyBookings";
-
-export default function App() {
+const App = () => {
   return (
     <Router>
-      <Navbar />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/search" element={<SearchResults />} />
@@ -17,4 +14,6 @@ export default function App() {
       </Routes>
     </Router>
   );
-}
+};
+
+export default App;
