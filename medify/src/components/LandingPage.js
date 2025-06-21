@@ -27,10 +27,10 @@ export default function LandingPage() {
       .catch(console.error);
   }, [selectedState]);
 
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (selectedState && selectedCity) {
-      navigate(`/search?state=${selectedState}&city=${selectedCity}`);
+      navigate(`/search?state=${selectedState}&city=${selectedCity.toUpperCase()}`);
     }
   };
 
