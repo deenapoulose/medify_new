@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function LandingPage() {
+export default function LandingPage() {
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
   const [selectedState, setSelectedState] = useState('');
@@ -11,20 +11,23 @@ function LandingPage() {
   useEffect(() => {
     fetch('https://meddata-backend.onrender.com/states')
       .then(res => res.json())
-      .then(data => setStates(data))
-      .catch(err => console.error(err));
+      .then(setStates)
+      .catch(console.error);
   }, []);
 
   useEffect(() => {
-    if (selectedState) {
-      fetch(`https://meddata-backend.onrender.com/cities/${selectedState}`)
-        .then(res => res.json())
-        .then(data => setCities(data))
-        .catch(err => console.error(err));
+    if (!selectedState) {
+      setCities([]);
+      setSelectedCity('');
+      return;
     }
+    fetch(`https://meddata-backend.onrender.com/cities/${selectedState}`)
+      .then(res => res.json())
+      .then(setCities)
+      .catch(console.error);
   }, [selectedState]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
     if (selectedState && selectedCity) {
       navigate(`/search?state=${selectedState}&city=${selectedCity}`);
@@ -34,16 +37,18 @@ function LandingPage() {
   return (
     <form onSubmit={handleSubmit}>
       <div id="state">
-        <ul>
-          {states.map((state, idx) => (
+        <ul style={{ border: '1px solid #ccc', maxHeight: 150, overflowY: 'auto' }}>
+          {states.length === 0 && <li>Loading states...</li>}
+          {states.map((state, i) => (
             <li
-              key={idx}
+              key={i}
               onClick={() => setSelectedState(state)}
               style={{
                 cursor: 'pointer',
+                backgroundColor: state === selectedState ? '#ddd' : 'transparent',
                 padding: '5px',
-                background: state === selectedState ? '#ddd' : 'transparent'
               }}
+              data-testid={`state-option-${state}`}
             >
               {state}
             </li>
@@ -52,16 +57,19 @@ function LandingPage() {
       </div>
 
       <div id="city">
-        <ul>
-          {cities.map((city, idx) => (
+        <ul style={{ border: '1px solid #ccc', maxHeight: 150, overflowY: 'auto' }}>
+          {selectedState === '' && <li>Please select a state first</li>}
+          {selectedState && cities.length === 0 && <li>Loading cities...</li>}
+          {cities.map((city, i) => (
             <li
-              key={idx}
+              key={i}
               onClick={() => setSelectedCity(city)}
               style={{
                 cursor: 'pointer',
+                backgroundColor: city === selectedCity ? '#ddd' : 'transparent',
                 padding: '5px',
-                background: city === selectedCity ? '#ddd' : 'transparent'
               }}
+              data-testid={`city-option-${city}`}
             >
               {city}
             </li>
@@ -69,9 +77,9 @@ function LandingPage() {
         </ul>
       </div>
 
-      <button type="submit" id="searchBtn">Search</button>
+      <button id="searchBtn" type="submit">
+        Search
+      </button>
     </form>
   );
 }
-
-export default LandingPage;
