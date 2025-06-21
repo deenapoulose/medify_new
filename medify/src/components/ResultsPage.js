@@ -1,13 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import BookingModal from './BookingModal';
+mport React, { useState, useEffect } from 'react';
 
-export default function ResultsPage() {
-  const location = useLocation();
-  const params = new URLSearchParams(location.search);
-  const state = params.get('state');
-  const city = params.get('city');
-
+export default function ResultsPage({ state, city }) {
   const [hospitals, setHospitals] = useState([]);
   const [selectedHospital, setSelectedHospital] = useState(null);
 
@@ -23,11 +16,13 @@ export default function ResultsPage() {
   return (
     <div>
       <h1>{hospitals.length} medical centers available in {city?.toLowerCase()}</h1>
-      {hospitals.map((hospital, i) => (
-        <div key={i} style={{ border: '1px solid #ccc', marginBottom: 10, padding: 10 }}>
+      {hospitals.map((hospital, idx) => (
+        <div key={idx} style={{ border: '1px solid #ccc', marginBottom: 10, padding: 10 }}>
           <h3>{hospital['Hospital Name']}</h3>
           <p>{hospital.Address}</p>
-          <button onClick={() => setSelectedHospital(hospital)}>Book FREE Center Visit</button>
+          <button onClick={() => setSelectedHospital(hospital)}>
+            Book FREE Center Visit
+          </button>
         </div>
       ))}
 
