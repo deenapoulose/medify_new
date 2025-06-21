@@ -1,4 +1,5 @@
-function BookingModal({ hospital, onClose }) {
+import React, { useState, useEffect } from 'react';
+export default function BookingModal({ hospital, onClose }) {
     const [selectedDate, setSelectedDate] = useState(() => {
       const today = new Date();
       return today.toISOString().split('T')[0];

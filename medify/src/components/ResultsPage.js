@@ -1,4 +1,5 @@
-mport React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import BookingModal from './BookingModal';
 
 export default function ResultsPage({ state, city }) {
   const [hospitals, setHospitals] = useState([]);
