@@ -13,7 +13,8 @@ export default function ResultsPage() {
 
   useEffect(() => {
     if (state && city) {
-      fetch(`https://meddata-backend.onrender.com/data?state=${state}&city=${city}`)
+        fetch(`/data?state=${state}&city=${city}`)
+
         .then(res => res.json())
         .then(setHospitals)
         .catch(console.error);
