@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-const MyBookings = () => {
+function MyBookings() {
   const [bookings, setBookings] = useState([]);
 
   useEffect(() => {
@@ -13,15 +13,18 @@ const MyBookings = () => {
   return (
     <div>
       <h1>My Bookings</h1>
-      {bookings.map((booking, idx) => (
-        <div key={idx}>
-          <h3>{booking['Hospital Name']}</h3>
-          <p>{booking.City}, {booking.State}</p>
-          <p>{booking.bookingDate} at {booking.bookingTime}</p>
-        </div>
-      ))}
+      {bookings.length === 0 ? (
+        <p>No bookings yet.</p>
+      ) : (
+        bookings.map((booking, idx) => (
+          <div key={idx}>
+            <h3>{booking['Hospital Name']}</h3> 
+            <p>{booking.City}, {booking.State} - {booking.bookingDate} at {booking.bookingTime}</p>
+          </div>
+        ))
+      )}
     </div>
   );
-};
+}
 
 export default MyBookings;
