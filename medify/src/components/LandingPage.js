@@ -10,19 +10,21 @@ function LandingPage() {
 
   useEffect(() => {
     fetch('https://meddata-backend.onrender.com/states')
-      .then((res) => res.json())
-      .then(setStates);
+      .then(res => res.json())
+      .then(data => setStates(data))
+      .catch(err => console.error(err));
   }, []);
 
   useEffect(() => {
     if (selectedState) {
       fetch(`https://meddata-backend.onrender.com/cities/${selectedState}`)
-        .then((res) => res.json())
-        .then(setCities);
+        .then(res => res.json())
+        .then(data => setCities(data))
+        .catch(err => console.error(err));
     }
   }, [selectedState]);
 
-  const handleSearch = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (selectedState && selectedCity) {
       navigate(`/search?state=${selectedState}&city=${selectedCity}`);
@@ -30,27 +32,45 @@ function LandingPage() {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSearch}>
-        <div id="state">
-          <select value={selectedState} onChange={(e) => setSelectedState(e.target.value)}>
-            <option value="">Select State</option>
-            {states.map((state) => (
-              <option key={state} value={state}>{state}</option>
-            ))}
-          </select>
-        </div>
-        <div id="city">
-          <select value={selectedCity} onChange={(e) => setSelectedCity(e.target.value)}>
-            <option value="">Select City</option>
-            {cities.map((city) => (
-              <option key={city} value={city}>{city}</option>
-            ))}
-          </select>
-        </div>
-        <button id="searchBtn" type="submit">Search</button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit}>
+      <div id="state">
+        <ul>
+          {states.map((state, idx) => (
+            <li
+              key={idx}
+              onClick={() => setSelectedState(state)}
+              style={{
+                cursor: 'pointer',
+                padding: '5px',
+                background: state === selectedState ? '#ddd' : 'transparent'
+              }}
+            >
+              {state}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div id="city">
+        <ul>
+          {cities.map((city, idx) => (
+            <li
+              key={idx}
+              onClick={() => setSelectedCity(city)}
+              style={{
+                cursor: 'pointer',
+                padding: '5px',
+                background: city === selectedCity ? '#ddd' : 'transparent'
+              }}
+            >
+              {city}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <button type="submit" id="searchBtn">Search</button>
+    </form>
   );
 }
 

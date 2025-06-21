@@ -1,7 +1,15 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-function MyBookings() {
-  const bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
+const MyBookings = () => {
+  const [bookings, setBookings] = useState([]);
+
+  useEffect(() => {
+    const stored = localStorage.getItem('bookings');
+    if (stored) {
+      setBookings(JSON.parse(stored));
+    }
+  }, []);
+
   return (
     <div>
       <h1>My Bookings</h1>
@@ -9,12 +17,11 @@ function MyBookings() {
         <div key={idx}>
           <h3>{booking['Hospital Name']}</h3>
           <p>{booking.City}, {booking.State}</p>
-          <p>Date: {booking.bookingDate}</p>
-          <p>Time: {booking.bookingTime}</p>
+          <p>{booking.bookingDate} at {booking.bookingTime}</p>
         </div>
       ))}
     </div>
   );
-}
+};
 
 export default MyBookings;
